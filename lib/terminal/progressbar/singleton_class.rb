@@ -33,10 +33,10 @@ module Terminal
         run options do |instance|
           printing_thread = Thread.new do
             loop do
-              instance.flush
               if instance.finished?
                 break
               else
+                instance.flush
                 sleep interval_sec
               end
             end

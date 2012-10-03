@@ -1,9 +1,10 @@
 terminal-progress_bar
-=========================
+=======================
 
 Description
------------
+------------
 
+100% |*************************************************************************|
 
 Features
 --------
@@ -13,16 +14,67 @@ Features
 Usage
 -----
 
-### Overview
+Try below senario and yor imaginations on REPL(irb/pry).
+
+### Setup
 
 ```ruby
 require 'terminal/progressbar'
+
+```
+
+### Flexible handling
+
+```ruby
+Terminal::ProgressBar.run mark: '*' do |bar|
+  50.times do
+    sleep 0.1
+    bar.increment!
+  end
+  bar.pointer = 15
+  bar.flush
+  sleep 2
+
+  30.times do
+    sleep 0.1
+    bar.increment! 2
+  end
+
+  30.times do
+    sleep 0.1
+    bar.decrement! 2
+  end
+
+  bar.pointer = 70
+  bar.flush
+  sleep 2
+end
+```
+
+### Auto printing under declared interval
+
+```ruby
+Terminal::ProgressBar.auto 0.2, mark: '*' do |bar|
+  50.times do
+    sleep 0.1
+    bar.increment
+  end
+
+  sleep 0.1
+  bar.pointer = 15
+
+  30.times do
+    sleep 0.1
+    bar.increment
+  end
+end
 ```
 
 Requirements
 -------------
 
 * Ruby - [1.9.2 or later](http://travis-ci.org/#!/kachick/terminal-progress_bar)
+* [optionalargument](https://github.com/kachick/optionalargument) - 0.0.3
 
 Install
 -------

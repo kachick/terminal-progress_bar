@@ -24,17 +24,17 @@ module Terminal
     # @return [Class]
     OptArg = OptionalArgument.define {
       opt :body_char, must: true,
-                        condition: ->v{v.length == 1},
-                        adjuster: ->v{v.to_str.dup.freeze},
-                        aliases: [:mark]
+                      condition: ->v{v.length == 1},
+                      adjuster: ->v{v.to_str.dup.freeze},
+                      aliases: [:mark]
       opt :max_count, default: 100,
-                        condition: AND(Integer, ->v{v >= 1}),
-                        adjuster: ->v{v.to_int}
+                      condition: AND(Integer, ->v{v >= 1}),
+                      adjuster: ->v{v.to_int}
       opt :max_width, default: DEFAULT_WIDTH,
-                        condition: AND(Integer, ->v{v >= 1}),
-                        adjuster: ->v{v.to_int}
-      opt :output, default: $stderr,
-                     condition: AND(CAN(:print), CAN(:flush))
+                      condition: AND(Integer, ->v{v >= 1}),
+                      adjuster: ->v{v.to_int}
+      opt :output,    default: $stderr,
+                      condition: AND(CAN(:print), CAN(:flush))
     }
 
     # @param [Hash] options
@@ -142,9 +142,9 @@ module Terminal
 
     alias_method :finish, :fast_forward
 
-    [:increment, :decrement, :rewind, :fast_forward, :finish].each do |change_pointer|
-      define_method :"#{change_pointer}!" do |*args, &block|
-        __send__ change_pointer, *args, &block
+    [:increment, :decrement, :rewind, :fast_forward, :finish].each do |changer|
+      define_method :"#{changer}!" do |*args, &block|
+        __send__ changer, *args, &block
         flush
       end
     end

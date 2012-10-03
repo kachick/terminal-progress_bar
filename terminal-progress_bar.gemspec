@@ -1,8 +1,8 @@
 Gem::Specification.new do |gem|
   gem.authors       = ['Kenichi Kamiya']
   gem.email         = ['kachick1+ruby@gmail.com']
-  gem.summary       = %q{}
-  gem.description   = %q{}
+  gem.summary       = %q{100% |*************************************************************************|}
+  gem.description   = %q{100% |*************************************************************************|}
   gem.homepage      = 'https://github.com/kachick/terminal-progress_bar'
 
   gem.files         = `git ls-files`.split($\)
