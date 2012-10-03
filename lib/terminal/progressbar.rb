@@ -1,6 +1,8 @@
 # Copyright (c) 2012 Kenichi Kamiya
 
 require 'optionalargument'
+require_relative 'progressbar/version'
+require_relative 'progressbar/singleton_class'
 
 module Terminal
 
@@ -16,60 +18,10 @@ module Terminal
     class Error < StandardError; end
     class InvalidPointingError < Error; end
 
-    class << self
-
-      # @group Useful wrapper for constructors
-
-      # @param [Hash] options
-      # @yield [instance]
-      # @yieldparam [ProgressBar] instance
-      # @yieldreturn [void]
-      # @return [void]
-      def run(options={})
-        instance = new options
-        instance.flush
-        yield instance
-      ensure
-        instance.finish!
-        nil
-      end
-
-      # @param [Float] interval_sec
-      # @param [Hash] options
-      # @yield [instance]
-      # @yieldparam [ProgressBar] instance
-      # @yieldreturn [void]
-      # @return [void]
-      def auto(interval_sec, options={})
-        interval_sec = Float interval_sec
-        printing_thread = nil
-
-        run options do |instance|
-          printing_thread = Thread.new do
-            loop do
-              instance.flush
-              if instance.finished?
-                break
-              else
-                sleep interval_sec
-              end
-            end
-          end
-
-          yield instance
-        end
-      ensure
-        printing_thread.join if printing_thread
-        nil
-      end
-
-      # @endgroup
-
-    end
-
     attr_reader :max_count, :max_width, :pointer
     alias_method :current_count, :pointer
 
+    # @return [Class]
     OptArg = OptionalArgument.define {
       opt :body_char, must: true,
                         condition: ->v{v.length == 1},
