@@ -18,7 +18,7 @@ module Terminal
     class Error < StandardError; end
     class InvalidPointingError < Error; end
 
-    attr_reader :max_count, :max_width, :pointer
+    attr_reader :max_count, :max_width, :pointer, :output
     alias_method :current_count, :pointer
 
     # @return [Class]
@@ -115,9 +115,9 @@ module Terminal
     # @param [Integer, #to_int] step
     # @return [step]
     def increment(step=1)
-      _step = step.to_int
-      @pointer += _step
-      raise InvalidPointingError unless pointable? @pointer
+      new_pointer = @pointer + step.to_int
+      raise InvalidPointingError unless pointable? new_pointer
+      @pointer = new_pointer
       step
     end
 
