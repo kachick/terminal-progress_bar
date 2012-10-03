@@ -1,5 +1,7 @@
 # Copyright (c) 2012 Kenichi Kamiya
 
+require 'optionalargument'
+
 module Terminal
 
   class ProgressBar
@@ -9,16 +11,28 @@ module Terminal
     EOL = "\n".freeze
     STOP = '|'.freeze
     SPACE = ' '.freeze
-    DECORATION_LENGTH ="100% #{STOP}  #{STOP}".length
+    DECORATION_LENGTH ="100% #{STOP}#{STOP}".length
 
     class Error < StandardError; end
     class InvalidPointingError < Error; end
 
+    OptArgs = OptionalArgument.define {
+      opt :max_count, default: 100,
+                        condition: AND(Integer, ->v{v >= 1}),
+                        adjuster: ->v{v.to_int}
+      opt :max_width, default: DEFAULT_WIDTH,
+                        condition: AND(Integer, ->v{v >= 1}),
+                        adjuster: ->v{v.to_int}
+      opt :output, default: $stderr,
+                     condition: CAN(:print)
+    }
+
     class << self
 
       # @return [ProgressBar]
-      def run(body_char, max_count=100, max_width=DEFAULT_WIDTH, output=$stderr)
-        instance = new body_char, max_count=100, max_width=DEFAULT_WIDTH, output=$stdout
+      def run(body_char, options={})
+        instance = new body_char, options
+        instance.flush
         yield instance
       ensure
         instance.finish
@@ -34,13 +48,14 @@ module Terminal
     # @param [Integer, #to_int] max_count
     # @param [Integer, #to_int] max_width
     # @param [IO] output
-    def initialize(body_char, max_count=100, max_width=DEFAULT_WIDTH, output=$stderr)
+    def initialize(body_char, options={})
       raise TypeError unless body_char.length == 1
+      options = OptArgs.parse options
 
       @body_char = body_char.to_str.dup.freeze
-      @max_count = max_count.to_int
-      @max_width = max_width.to_int
-      @output = output
+      @max_count = options.max_count
+      @max_width = options.max_width
+      @output = options.output
       @pointer = 0
     end
 
@@ -61,7 +76,7 @@ module Terminal
 
     # @return [Integer]
     def current_bar_width
-      max_bar_width / (100 / percentage)
+      percentage == 0 ? 0 : max_bar_width / (100 / percentage)
     end
 
     # @return [Rational] pointer / max_count
@@ -71,12 +86,12 @@ module Terminal
 
     # @return [Fixnum] 1..100
     def percentage
-      ((rational * (100 / @max_count)) * 100).to_i
+      ((rational * (100 / @max_count)) * 100).to_int
     end
 
     # @return [String]
     def line
-      "#{percentage.to_s.rjust 3}% #{STOP} #{bar} #{STOP}"
+      "#{percentage.to_s.rjust 3}% #{STOP}#{bar}#{STOP}"
     end
 
     # @return [String]
@@ -90,11 +105,37 @@ module Terminal
       @output.print(finished? ? EOL : CR)
     end
 
-    # @return [void]
-    def succ!(step=1)
-      @pointer += step
-      raise InvalidPointingError unless @pointer <= @max_count
+    # @param [Integer, #to_int] point
+    # @return [point]
+    def pointer=(point)
+      int = point.to_int
+      raise InvalidPointingError unless pointable? int
+      @pointer = int
       flush
+      point
+    end
+
+    # @param [Integer, #to_int] point
+    def pointable?(point)
+      int = point.to_int
+      (int >= 0) && (int <= @max_count)
+    end
+
+    # @param [Integer, #to_int] step
+    # @return [void]
+    def increment(step=1)
+      step = step.to_int
+      @pointer += step
+      raise InvalidPointingError unless pointable? @pointer
+      flush
+    end
+
+    alias_method :succ!, :increment
+
+    # @param [Integer, #to_int] step
+    # @return [void]
+    def decrement(step=1)
+      increment(-step)
     end
 
     # @return [void]

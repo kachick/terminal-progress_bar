@@ -14,6 +14,8 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.2'
 
+  gem.add_runtime_dependency 'optionalargument', '~> 0.0.3'
+
   gem.add_development_dependency 'declare', '~> 0.0.5'
   gem.add_development_dependency 'yard', '~> 0.8'
 end
