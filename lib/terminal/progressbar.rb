@@ -16,7 +16,65 @@ module Terminal
     class Error < StandardError; end
     class InvalidPointingError < Error; end
 
+    class << self
+
+      # @group Useful wrapper for constructors
+
+      # @param [Hash] options
+      # @yield [instance]
+      # @yieldparam [ProgressBar] instance
+      # @yieldreturn [void]
+      # @return [void]
+      def run(options={})
+        instance = new options
+        instance.flush
+        yield instance
+      ensure
+        instance.finish!
+        nil
+      end
+
+      # @param [Float] interval_sec
+      # @param [Hash] options
+      # @yield [instance]
+      # @yieldparam [ProgressBar] instance
+      # @yieldreturn [void]
+      # @return [void]
+      def auto(interval_sec, options={})
+        interval_sec = Float interval_sec
+        printing_thread = nil
+
+        run options do |instance|
+          printing_thread = Thread.new do
+            loop do
+              instance.flush
+              if instance.finished?
+                break
+              else
+                sleep interval_sec
+              end
+            end
+          end
+
+          yield instance
+        end
+      ensure
+        printing_thread.join if printing_thread
+        nil
+      end
+
+      # @endgroup
+
+    end
+
+    attr_reader :max_count, :max_width, :pointer
+    alias_method :current_count, :pointer
+
     OptArg = OptionalArgument.define {
+      opt :body_char, must: true,
+                        condition: ->v{v.length == 1},
+                        adjuster: ->v{v.to_str.dup.freeze},
+                        aliases: [:mark]
       opt :max_count, default: 100,
                         condition: AND(Integer, ->v{v >= 1}),
                         adjuster: ->v{v.to_int}
@@ -24,36 +82,18 @@ module Terminal
                         condition: AND(Integer, ->v{v >= 1}),
                         adjuster: ->v{v.to_int}
       opt :output, default: $stderr,
-                     condition: CAN(:print)
+                     condition: AND(CAN(:print), CAN(:flush))
     }
 
-    class << self
-
-      # @return [ProgressBar]
-      def run(body_char, options={})
-        instance = new body_char, options
-        instance.flush
-        yield instance
-      ensure
-        instance.finish
-        instance
-      end
-
-    end
-
-    attr_reader :max_count, :max_width, :pointer
-    alias_method :current_count, :pointer
-
     # @param [Hash] options
-    # @param [String, #to_str] body_char
+    # @option options [String, #to_str] :body_char (also :mark)
     # @option options [Integer, #to_int] :max_count
     # @option options [Integer, #to_int] :max_width
-    # @option options [IO] :output
-    def initialize(body_char, options={})
-      raise TypeError unless body_char.length == 1
+    # @option options [IO, StringIO, #print, #flush] :output
+    def initialize(options={})
       opts = OptArg.parse options
 
-      @body_char = body_char.to_str.dup.freeze
+      @body_char = opts.body_char
       @max_count = opts.max_count
       @max_width = opts.max_width
       @output = opts.output
@@ -70,14 +110,9 @@ module Terminal
       max_width - DECORATION_LENGTH
     end
 
-    # @return [String]
-    def bar_padding
-      SPACE * (max_bar_width - current_bar_width)
-    end
-
     # @return [Integer]
     def current_bar_width
-      percentage == 0 ? 0 : max_bar_width / (100 / percentage)
+      percentage == 0 ? 0 : (max_bar_width * rational).to_int
     end
 
     # @return [Fixnum] 1..100
@@ -86,29 +121,20 @@ module Terminal
     end
 
     # @return [String]
-    def line
-      "#{percentage.to_s.rjust 3}% #{STOP}#{bar}#{STOP}"
+    def bar
+      "#{@body_char * current_bar_width}#{bar_padding}"
     end
 
     # @return [String]
-    def bar
-      "#{@body_char * current_bar_width}#{bar_padding}"
+    def line
+      "#{percentage.to_s.rjust 3}% #{STOP}#{bar}#{STOP}"
     end
 
     # @return [void]
     def flush
       @output.print line
       @output.print(finished? ? EOL : CR)
-    end
-
-    # @param [Integer, #to_int] point
-    # @return [point]
-    def pointer=(point)
-      int = point.to_int
-      raise InvalidPointingError unless pointable? int
-      @pointer = int
-      flush
-      point
+      @output.flush
     end
 
     # @param [Integer, #to_int] point
@@ -117,42 +143,68 @@ module Terminal
       (int >= 0) && (int <= @max_count)
     end
 
-    # @param [Integer, #to_int] step
-    # @return [void]
-    def increment(step=1)
-      step = step.to_int
-      @pointer += step
-      raise InvalidPointingError unless pointable? @pointer
-      flush
+    def finished?
+      @pointer == @max_count
     end
 
-    alias_method :succ!, :increment
+    alias_method :end?, :finished?
+
+    # @group Change Pointer
+
+    # @param [Integer, #to_int] point
+    # @return [point]
+    def pointer=(point)
+      int = point.to_int
+      raise InvalidPointingError unless pointable? int
+      @pointer = int
+      point
+    end
 
     # @param [Integer, #to_int] step
-    # @return [void]
+    # @return [step]
+    def increment(step=1)
+      _step = step.to_int
+      @pointer += _step
+      raise InvalidPointingError unless pointable? @pointer
+      step
+    end
+
+    # @param [Integer, #to_int] step
+    # @return [step]
     def decrement(step=1)
       increment(-step)
+      step
     end
 
     # @return [void]
     def rewind
       @pointer = 0
-      flush
+      nil
     end
 
     # @return [void]
     def fast_forward
       @pointer = @max_count
-      flush
+      nil
     end
 
     alias_method :finish, :fast_forward
 
-    def finished?
-      @pointer == @max_count
+    [:increment, :decrement, :rewind, :fast_forward, :finish].each do |change_pointer|
+      define_method :"#{change_pointer}!" do |*args, &block|
+        __send__ change_pointer, *args, &block
+        flush
+      end
     end
 
+    # @endgroup
+
     private
+
+    # @return [String]
+    def bar_padding
+      SPACE * (max_bar_width - current_bar_width)
+    end
 
     # @return [Rational] pointer / max_count
     def rational

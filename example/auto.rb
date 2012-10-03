@@ -2,17 +2,17 @@ $VERBOSE = true
 
 require_relative '../lib/terminal/progressbar'
 
-include Terminal
-
-ProgressBar.run '*' do |bar|
+Terminal::ProgressBar.auto 0.2, mark: '*' do |bar|
   50.times do
-    sleep 0.02
-    bar.succ!
+    sleep 0.1
+    bar.increment
   end
+
+  sleep 0.1
   bar.pointer = 15
-  sleep 2
 
   30.times do
-    bar.succ! 2
+    sleep 0.1
+    bar.increment
   end
 end
