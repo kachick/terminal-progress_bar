@@ -16,7 +16,7 @@ module Terminal
     class Error < StandardError; end
     class InvalidPointingError < Error; end
 
-    OptArgs = OptionalArgument.define {
+    OptArg = OptionalArgument.define {
       opt :max_count, default: 100,
                         condition: AND(Integer, ->v{v >= 1}),
                         adjuster: ->v{v.to_int}
@@ -44,18 +44,19 @@ module Terminal
     attr_reader :max_count, :max_width, :pointer
     alias_method :current_count, :pointer
 
+    # @param [Hash] options
     # @param [String, #to_str] body_char
-    # @param [Integer, #to_int] max_count
-    # @param [Integer, #to_int] max_width
-    # @param [IO] output
+    # @option options [Integer, #to_int] :max_count
+    # @option options [Integer, #to_int] :max_width
+    # @option options [IO] :output
     def initialize(body_char, options={})
       raise TypeError unless body_char.length == 1
-      options = OptArgs.parse options
+      opts = OptArg.parse options
 
       @body_char = body_char.to_str.dup.freeze
-      @max_count = options.max_count
-      @max_width = options.max_width
-      @output = options.output
+      @max_count = opts.max_count
+      @max_width = opts.max_width
+      @output = opts.output
       @pointer = 0
     end
 
@@ -77,11 +78,6 @@ module Terminal
     # @return [Integer]
     def current_bar_width
       percentage == 0 ? 0 : max_bar_width / (100 / percentage)
-    end
-
-    # @return [Rational] pointer / max_count
-    def rational
-      Rational @pointer, @max_count
     end
 
     # @return [Fixnum] 1..100
@@ -154,6 +150,13 @@ module Terminal
 
     def finished?
       @pointer == @max_count
+    end
+
+    private
+
+    # @return [Rational] pointer / max_count
+    def rational
+      Rational @pointer, @max_count
     end
 
   end
