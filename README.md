@@ -20,7 +20,6 @@ Try below senario and yor imaginations on REPL(irb/pry).
 
 ```ruby
 require 'terminal/progressbar'
-
 ```
 
 ### Flexible handling
