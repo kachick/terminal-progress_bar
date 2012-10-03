@@ -1,0 +1,1 @@
+--readme README.md --private lib/**/*.rb --exclude core_ext - MIT-LICENSE
