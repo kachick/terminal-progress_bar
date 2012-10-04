@@ -8,7 +8,7 @@ module Terminal
 
   class ProgressBar
 
-    DEFAULT_WIDTH = 80
+    DEFAULT_WIDTH = 78
     CR = "\r".freeze
     EOL = "\n".freeze
     STOP = '|'.freeze
