@@ -9,6 +9,9 @@ The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
   IS_A Terminal::ProgressBar
   NG bar.finished?
 
+  Terminal::ProgressBar.__send__ :remove_const, :DEFAULT_WIDTH
+  Terminal::ProgressBar.const_set :DEFAULT_WIDTH, 78
+
   publics = %w[
     max_count max_width pointer output current_count
     body_char max_bar_width current_bar_width
