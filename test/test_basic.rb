@@ -46,7 +46,7 @@ The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
   bar.output.rewind
 
   The bar.output.read do
-    is " 10% |*******                                                                  |\r"
+    is " 10% |*******                                                                |\r"
   end
 
   bar.output.rewind
@@ -54,7 +54,7 @@ The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
   bar.output.rewind
 
   The bar.output.read do
-    is " 90% |*****************************************************************        |\r"
+    is " 90% |***************************************************************        |\r"
   end
 
   bar.output.rewind
@@ -62,7 +62,7 @@ The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
   bar.output.rewind
 
   The bar.output.read do
-    is " 99% |************************************************************************ |\r"
+    is " 99% |********************************************************************** |\r"
   end
 
   bar.output.rewind
@@ -75,7 +75,7 @@ The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
   bar.output.rewind
 
   The bar.output.read do
-    is "100% |*************************************************************************|\n"
+    is "100% |***********************************************************************|\n"
   end
 
 end
