@@ -1,8 +1,10 @@
+require File.expand_path('../lib/terminal/progressbar/version', __FILE__)
+
 Gem::Specification.new do |gem|
   gem.authors       = ['Kenichi Kamiya']
   gem.email         = ['kachick1+ruby@gmail.com']
-  gem.summary       = %q{100% |*************************************************************************|}
-  gem.description   = %q{100% |*************************************************************************|}
+  gem.summary       = %q{100% |***********************************************************************|}
+  gem.description   = %q{100% |***********************************************************************|}
   gem.homepage      = 'https://github.com/kachick/terminal-progress_bar'
 
   gem.files         = `git ls-files`.split($\)
@@ -10,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = 'terminal-progress_bar'
   gem.require_paths = ['lib']
-  gem.version       = '0.0.1'
+  gem.version       = Terminal::ProgressBar::VERSION.dup
 
   gem.required_ruby_version = '>= 1.9.2'
 
