@@ -1,6 +1,10 @@
 terminal-progress_bar
 =======================
 
+[![Build Status](https://secure.travis-ci.org/kachick/terminal-progress_bar.png)](http://travis-ci.org/kachick/terminal-progress_bar)
+[![Gem Version](https://badge.fury.io/rb/terminal-progress_bar.png)](http://badge.fury.io/rb/terminal-progress_bar)
+[![Dependency Status](https://gemnasium.com/kachick/terminal-progress_bar.svg)](https://gemnasium.com/kachick/terminal-progress_bar)
+
 Description
 ------------
 
@@ -81,16 +85,11 @@ Install
 $ gem install terminal-progress_bar
 ```
 
-Build Status
-------------
-
-[![Build Status](https://secure.travis-ci.org/kachick/terminal-progress_bar.png)](http://travis-ci.org/kachick/terminal-progress_bar)
-
 Link
 ----
 
 * [code](https://github.com/kachick/terminal-progress_bar)
-* [API](http://kachick.github.com/terminal-progress_bar/yard/frames.html)
+* [API](http://www.rubydoc.info/github/kachick/terminal-progress_bar)
 * [issues](https://github.com/kachick/terminal-progress_bar/issues)
 * [CI](http://travis-ci.org/#!/kachick/terminal-progress_bar)
 * [gem](https://rubygems.org/gems/terminal-progress_bar)
