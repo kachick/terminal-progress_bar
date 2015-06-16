@@ -1,3 +1,5 @@
+# coding: us-ascii
+
 require 'declare/autorun'
 require 'stringio'
 
