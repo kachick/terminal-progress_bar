@@ -72,8 +72,7 @@ end
 Requirements
 -------------
 
-* Ruby - [1.9.2 or later](http://travis-ci.org/#!/kachick/terminal-progress_bar)
-* [optionalargument](https://github.com/kachick/optionalargument) - 0.0.3
+* Ruby - [2.0 or later](http://travis-ci.org/#!/kachick/terminal-progress_bar)
 
 Install
 -------
@@ -102,4 +101,3 @@ License
 The MIT X11 License  
 Copyright (c) 2012 Kenichi Kamiya  
 See MIT-LICENSE for further details.
-
