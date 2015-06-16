@@ -9,7 +9,7 @@ module Terminal
   class ProgressBar
 
     # auto adjusting terminal size if required io/console
-    DEFAULT_WIDTH = $stderr.respond_to?(:winsize) ? ($stderr.winsize.last - 1) : 78
+    DEFAULT_WIDTH = $stderr.respond_to?(:winsize) ? $stderr.winsize.last : 80
     CR = "\r".freeze
     EOL = "\n".freeze
     STOP = '|'.freeze
