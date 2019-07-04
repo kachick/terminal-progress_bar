@@ -76,7 +76,7 @@ end
 Requirements
 -------------
 
-* Ruby - [2.0 or later](http://travis-ci.org/#!/kachick/terminal-progress_bar)
+* Ruby - [2.5 or later](http://travis-ci.org/#!/kachick/terminal-progress_bar)
 
 Install
 -------
