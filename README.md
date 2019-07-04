@@ -3,7 +3,6 @@ terminal-progress_bar
 
 [![Build Status](https://secure.travis-ci.org/kachick/terminal-progress_bar.png)](http://travis-ci.org/kachick/terminal-progress_bar)
 [![Gem Version](https://badge.fury.io/rb/terminal-progress_bar.png)](http://badge.fury.io/rb/terminal-progress_bar)
-[![Dependency Status](https://gemnasium.com/kachick/terminal-progress_bar.svg)](https://gemnasium.com/kachick/terminal-progress_bar)
 
 Description
 ------------
