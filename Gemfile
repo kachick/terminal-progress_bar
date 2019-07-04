@@ -8,5 +8,5 @@ end
 
 group :test do
   gem 'rake'
-  gem 'declare', '~> 0.0.5'
+  gem 'declare'
 end
