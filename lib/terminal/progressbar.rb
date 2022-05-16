@@ -44,7 +44,7 @@ module Terminal
     # @option options [Integer, #to_int] :max_count
     # @option options [Integer, #to_int] :max_width
     # @option options [IO, StringIO, #print, #flush] :output
-    def initialize(options={})
+    def initialize(**options)
       opts = OptArg.parse(options)
 
       @body_char = opts.body_char
@@ -109,11 +109,9 @@ module Terminal
     # @return [point]
     def pointer=(point)
       int = point.to_int
-      raise InvalidPointingError unless pointable?(int
-                                                  )
+      raise InvalidPointingError unless pointable?(int)
 
       @pointer = int
-      point
     end
 
     # @param [Integer, #to_int] step

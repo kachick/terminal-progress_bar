@@ -11,7 +11,7 @@ module Terminal
       # @yieldparam [ProgressBar] instance
       # @yieldreturn [void]
       # @return [void]
-      def run(options={})
+      def run(**options)
         instance = new(options)
         instance.flush
         yield instance
@@ -26,7 +26,7 @@ module Terminal
       # @yieldparam [ProgressBar] instance
       # @yieldreturn [void]
       # @return [void]
-      def auto(interval_sec, options={})
+      def auto(interval_sec, **options)
         interval_sec = Float(interval_sec)
         printing_thread = nil
 
