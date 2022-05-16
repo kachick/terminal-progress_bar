@@ -2,10 +2,10 @@
 
 require_relative 'helper'
 
-Declare.describe do
-  MARK = '*'
-  OUTPUT = StringIO.new
+MARK = '*'
+OUTPUT = StringIO.new
 
+Declare.describe do
   The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
     IS_A Terminal::ProgressBar
     NG bar.finished?
