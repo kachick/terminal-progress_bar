@@ -1,8 +1,9 @@
 # coding: us-ascii
+# frozen_string_literal: true
 
 require_relative 'helper'
 
-MARK = '*'
+MARK = '*'.freeze
 OUTPUT = StringIO.new
 
 Declare.describe do
