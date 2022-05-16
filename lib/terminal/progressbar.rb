@@ -3,18 +3,17 @@
 
 # Copyright (c) 2012 Kenichi Kamiya
 
+require 'io/console'
 require 'optionalargument'
 require_relative 'progressbar/version'
 require_relative 'progressbar/singleton_class'
 
 module Terminal
   class ProgressBar
-    # auto adjusting terminal size if required io/console
-    DEFAULT_WIDTH = $stderr.respond_to?(:winsize) ? $stderr.winsize.last : 80
-    CR = "\r".freeze
-    EOL = "\n".freeze
-    STOP = '|'.freeze
-    SPACE = ' '.freeze
+    CR = "\r"
+    EOL = "\n"
+    STOP = '|'
+    SPACE = ' '
     DECORATION_LENGTH = "100% #{STOP}#{STOP}".length
 
     class Error < StandardError; end
@@ -32,7 +31,7 @@ module Terminal
       opt(:max_count, default: 100,
                       condition: AND(Integer, ->v { v >= 1 }),
                       adjuster: ->v { v.to_int })
-      opt(:max_width, default: DEFAULT_WIDTH,
+      opt(:max_width, default: $stderr.winsize.last,
                       condition: AND(Integer, ->v { v >= 1 }),
                       adjuster: ->v { v.to_int })
       opt(:output,    default: $stderr,

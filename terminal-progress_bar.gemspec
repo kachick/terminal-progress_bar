@@ -26,6 +26,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
 
+  gem.add_runtime_dependency 'io-console', '~> 0.5.11'
   gem.add_runtime_dependency 'optionalargument', '~> 0.6.0'
 
   # common
