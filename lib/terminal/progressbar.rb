@@ -1,21 +1,20 @@
 # coding: us-ascii
+# frozen_string_literal: true
+
 # Copyright (c) 2012 Kenichi Kamiya
 
+require 'io/console'
 require 'optionalargument'
 require_relative 'progressbar/version'
 require_relative 'progressbar/singleton_class'
 
 module Terminal
-
   class ProgressBar
-
-    # auto adjusting terminal size if required io/console
-    DEFAULT_WIDTH = $stderr.respond_to?(:winsize) ? $stderr.winsize.last : 80
-    CR = "\r".freeze
-    EOL = "\n".freeze
-    STOP = '|'.freeze
-    SPACE = ' '.freeze
-    DECORATION_LENGTH ="100% #{STOP}#{STOP}".length
+    CR = "\r"
+    EOL = "\n"
+    STOP = '|'
+    SPACE = ' '
+    DECORATION_LENGTH = "100% #{STOP}#{STOP}".length
 
     class Error < StandardError; end
     class InvalidPointingError < Error; end
@@ -25,18 +24,18 @@ module Terminal
 
     # @return [Class]
     OptArg = OptionalArgument.define {
-      opt :body_char, must: true,
-                      condition: ->v{v.length == 1},
-                      adjuster: ->v{v.to_str.dup.freeze},
-                      aliases: [:mark]
-      opt :max_count, default: 100,
-                      condition: AND(Integer, ->v{v >= 1}),
-                      adjuster: ->v{v.to_int}
-      opt :max_width, default: DEFAULT_WIDTH,
-                      condition: AND(Integer, ->v{v >= 1}),
-                      adjuster: ->v{v.to_int}
-      opt :output,    default: $stderr,
-                      condition: AND(CAN(:print), CAN(:flush))
+      opt(:body_char, must: true,
+                      condition: ->v { v.length == 1 },
+                      adjuster: ->v { v.to_str.dup.freeze },
+                      aliases: [:mark])
+      opt(:max_count, default: 100,
+                      condition: AND(Integer, ->v { v >= 1 }),
+                      adjuster: ->v { v.to_int })
+      opt(:max_width, default: $stderr.winsize.last,
+                      condition: AND(Integer, ->v { v >= 1 }),
+                      adjuster: ->v { v.to_int })
+      opt(:output,    default: $stderr,
+                      condition: AND(CAN(:print), CAN(:flush)))
     }
 
     # @param [Hash] options
@@ -44,8 +43,8 @@ module Terminal
     # @option options [Integer, #to_int] :max_count
     # @option options [Integer, #to_int] :max_width
     # @option options [IO, StringIO, #print, #flush] :output
-    def initialize(options={})
-      opts = OptArg.parse options
+    def initialize(**options)
+      opts = OptArg.parse(options)
 
       @body_char = opts.body_char
       @max_count = opts.max_count
@@ -81,12 +80,12 @@ module Terminal
 
     # @return [String]
     def line
-      "#{percentage.to_s.rjust 3}% #{STOP}#{bar}#{STOP}"
+      "#{percentage.to_s.rjust(3)}% #{STOP}#{bar}#{STOP}"
     end
 
     # @return [void]
     def flush
-      @output.print line
+      @output.print(line)
       @output.print(finished? ? EOL : CR)
       @output.flush
     end
@@ -109,16 +108,18 @@ module Terminal
     # @return [point]
     def pointer=(point)
       int = point.to_int
-      raise InvalidPointingError unless pointable? int
+      raise InvalidPointingError unless pointable?(int)
+
       @pointer = int
-      point
     end
 
     # @param [Integer, #to_int] step
     # @return [step]
     def increment(step=1)
       new_pointer = @pointer + step.to_int
-      raise InvalidPointingError unless pointable? new_pointer
+      raise InvalidPointingError unless pointable?(new_pointer
+                                                  )
+
       @pointer = new_pointer
       step
     end
@@ -162,9 +163,7 @@ module Terminal
 
     # @return [Rational] pointer / max_count
     def rational
-      Rational @pointer, @max_count
+      Rational(@pointer, @max_count)
     end
-
   end
-
 end

@@ -1,30 +1,49 @@
-lib_name = 'terminal-progress_bar'.freeze
+# coding: us-ascii
+# frozen_string_literal: true
 
-require_relative 'lib/terminal/progressbar/version'
+lib_name = 'terminal-progress_bar'
+
+require_relative './lib/terminal/progressbar/version'
+repository_url = "https://github.com/kachick/#{lib_name}"
 
 Gem::Specification.new do |gem|
+  gem.summary       = %q{100% |***********************************************************************|}
+  gem.description   = <<-'DESCRIPTION'
+    100% |***********************************************************************|
+  DESCRIPTION
+  gem.homepage      = repository_url
+  gem.license       = 'MIT'
+  gem.name          = lib_name
+  gem.version       = Terminal::ProgressBar::VERSION
+
+  gem.metadata = {
+    'documentation_uri'     => 'https://kachick.github.io/terminal-progress_bar/',
+    'homepage_uri'          => repository_url,
+    'source_code_uri'       => repository_url,
+    'bug_tracker_uri'       => "#{repository_url}/issues",
+    'rubygems_mfa_required' => 'true'
+  }
+
+  gem.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
+
+  gem.add_runtime_dependency 'io-console', '~> 0.5.11'
+  gem.add_runtime_dependency 'optionalargument', '~> 0.6.0'
+
+  # common
+
   gem.authors       = ['Kenichi Kamiya']
   gem.email         = ['kachick1+ruby@gmail.com']
-  gem.summary       = %q{100% |***********************************************************************|}
-  gem.description   = %q{100% |***********************************************************************|}
+  git_managed_files = `git ls-files`.lines.map(&:chomp)
+  might_be_parsing_by_tool_as_dependabot = git_managed_files.empty?
+  base_files = Dir['README*', '*LICENSE*',  'lib/**/*', 'sig/**/*'].uniq
+  files = might_be_parsing_by_tool_as_dependabot ? base_files : (base_files & git_managed_files)
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.homepage      = "https://github.com/kachick/#{lib_name}"
-  gem.license       = 'MIT'
-  gem.name          = lib_name.dup
-  gem.require_paths = ['lib']
-  gem.version       = Terminal::ProgressBar::VERSION.dup
-
-  gem.add_runtime_dependency 'optionalargument', '~> 0.1'
-
-  gem.add_development_dependency 'declare', '~> 0.0.6'
-  gem.add_development_dependency 'yard', '>= 0.9.20', '< 2'
-  gem.add_development_dependency 'rake', '>= 10', '< 20'
-  gem.add_development_dependency 'bundler', '>= 2', '< 3'
-
-  if RUBY_ENGINE == 'rbx'
-    gem.add_dependency 'rubysl', '~> 2.1'
+  unless might_be_parsing_by_tool_as_dependabot
+    if files.grep(%r!\A(?:lib|sig)/!).size < 2
+      raise "obvious mistaken in packaging files, looks shortage: #{files.inspect}"
+    end
   end
+
+  gem.files         = files
+  gem.require_paths = ['lib']
 end

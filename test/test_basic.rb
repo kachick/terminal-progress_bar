@@ -1,86 +1,83 @@
 # coding: us-ascii
+# frozen_string_literal: true
 
 require_relative 'helper'
 
-
-MARK = '*'
+MARK = '*'.freeze
 OUTPUT = StringIO.new
 
-The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
-  
-  IS_A Terminal::ProgressBar
-  NG bar.finished?
+Declare.describe do
+  The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT, max_width: 80) do |bar|
+    IS_A Terminal::ProgressBar
+    NG bar.finished?
 
-  Terminal::ProgressBar.__send__ :remove_const, :DEFAULT_WIDTH
-  Terminal::ProgressBar.const_set :DEFAULT_WIDTH, 78
+    publics = %w[
+      max_count max_width pointer output current_count
+      body_char max_bar_width current_bar_width
+      percentage bar line flush pointable? finished? end? pointer=
+      increment decrement rewind fast_forward finish
+      increment! decrement! rewind! fast_forward! finish!
+    ]
+    publics.each do |pub|
+      CAN pub
+    end
 
-  publics = %w[
-    max_count max_width pointer output current_count
-    body_char max_bar_width current_bar_width
-    percentage bar line flush pointable? finished? end? pointer=
-    increment decrement rewind fast_forward finish
-    increment! decrement! rewind! fast_forward! finish!
-  ]
-  publics.each do |pub|
-    CAN pub
+    The bar.body_char do
+      IS MARK
+      NG EQUAL?(MARK)
+    end
+
+    The bar.output do
+      EQUAL OUTPUT
+    end
+
+    bar.output.rewind
+
+    The bar.output.read do
+      is ''
+    end
+
+    bar.increment 10
+    bar.output.rewind
+
+    The bar.output.read do
+      is ''
+    end
+
+    bar.flush
+    bar.output.rewind
+
+    The bar.output.read do
+      is " 10% |*******                                                                  |\r"
+    end
+
+    bar.output.rewind
+    bar.increment! 80
+    bar.output.rewind
+
+    The bar.output.read do
+      is " 90% |*****************************************************************        |\r"
+    end
+
+    bar.output.rewind
+    bar.increment! 9
+    bar.output.rewind
+
+    The bar.output.read do
+      is " 99% |************************************************************************ |\r"
+    end
+
+    bar.output.rewind
+
+    CATCH Terminal::ProgressBar::InvalidPointingError do
+      bar.increment! 2
+    end
+
+    bar.increment! 1
+    bar.output.rewind
+
+    The bar.output.read do
+      is "100% |*************************************************************************|\n"
+    end
   end
-
-  The bar.body_char do
-    IS MARK
-    NG EQUAL?(MARK)
-  end
-
-  The bar.output do
-    EQUAL OUTPUT
-  end
-
-  bar.output.rewind
-
-  The bar.output.read do
-    is ''
-  end
-
-  bar.increment 10
-  bar.output.rewind
-
-  The bar.output.read do
-    is ''
-  end
-
-  bar.flush
-  bar.output.rewind
-
-  The bar.output.read do
-    is " 10% |*******                                                                  |\r"
-  end
-
-  bar.output.rewind
-  bar.increment! 80
-  bar.output.rewind
-
-  The bar.output.read do
-    is " 90% |*****************************************************************        |\r"
-  end
-
-  bar.output.rewind
-  bar.increment! 9
-  bar.output.rewind
-
-  The bar.output.read do
-    is " 99% |************************************************************************ |\r"
-  end
-
-  bar.output.rewind
-  
-  CATCH Terminal::ProgressBar::InvalidPointingError do
-    bar.increment! 2
-  end
-
-  bar.increment! 1
-  bar.output.rewind
-
-  The bar.output.read do
-    is "100% |*************************************************************************|\n"
-  end
-
 end

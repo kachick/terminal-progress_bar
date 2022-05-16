@@ -1,11 +1,9 @@
 # coding: us-ascii
+# frozen_string_literal: true
 
 module Terminal
-
   class ProgressBar
-
     class << self
-
       # @group Useful wrapper for constructors
 
       # @param [Hash] options
@@ -13,8 +11,8 @@ module Terminal
       # @yieldparam [ProgressBar] instance
       # @yieldreturn [void]
       # @return [void]
-      def run(options={})
-        instance = new options
+      def run(**options)
+        instance = new(options)
         instance.flush
         yield instance
       ensure
@@ -28,18 +26,18 @@ module Terminal
       # @yieldparam [ProgressBar] instance
       # @yieldreturn [void]
       # @return [void]
-      def auto(interval_sec, options={})
-        interval_sec = Float interval_sec
+      def auto(interval_sec, **options)
+        interval_sec = Float(interval_sec)
         printing_thread = nil
 
-        run options do |instance|
+        run(options) do |instance|
           printing_thread = Thread.new do
             loop do
               if instance.finished?
                 break
               else
                 instance.flush
-                sleep interval_sec
+                sleep(interval_sec)
               end
             end
           end
@@ -52,9 +50,6 @@ module Terminal
       end
 
       # @endgroup
-
     end
-
   end
-
 end
