@@ -6,12 +6,9 @@ MARK = '*'
 OUTPUT = StringIO.new
 
 Declare.describe do
-  The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT) do |bar|
+  The Terminal::ProgressBar.new(mark: MARK, output: OUTPUT, max_width: 80) do |bar|
     IS_A Terminal::ProgressBar
     NG bar.finished?
-
-    Terminal::ProgressBar.__send__ :remove_const, :DEFAULT_WIDTH
-    Terminal::ProgressBar.const_set :DEFAULT_WIDTH, 78
 
     publics = %w[
       max_count max_width pointer output current_count
