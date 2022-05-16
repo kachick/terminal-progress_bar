@@ -117,8 +117,7 @@ module Terminal
     # @return [step]
     def increment(step=1)
       new_pointer = @pointer + step.to_int
-      raise InvalidPointingError unless pointable?(new_pointer
-                                                  )
+      raise InvalidPointingError unless pointable?(new_pointer)
 
       @pointer = new_pointer
       step
