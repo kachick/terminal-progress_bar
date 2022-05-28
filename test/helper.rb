@@ -6,6 +6,9 @@ require 'warning'
 
 require 'declare/autorun'
 
+# Investigate https://github.com/kachick/terminal-progress_bar/runs/6626299850?check_suite_focus=true
+pp ENV.select { |key, _value| /TERM/i.match?(key) }
+
 require 'irb'
 require 'power_assert/colorize'
 require 'irb/power_assert'
