@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-20.04] # To avoid 22.x in ruby-head - https://github.com/ruby/setup-ruby/commit/57a3395c80307c17d69373c76472d5bc5c95efe3#
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [3.1, head]
     runs-on: ${{ matrix.os }}
