@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04] # To avoid 22.x in ruby-head - https://github.com/ruby/setup-ruby/commit/57a3395c80307c17d69373c76472d5bc5c95efe3#
+        os: [ubuntu-latest]
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [3.1, head]
     runs-on: ${{ matrix.os }}
@@ -43,4 +43,5 @@ jobs:
       - run: bundle exec rake test_behaviors --suppress-backtrace='\/bundle'
         env:
           BUNDLE_WITHOUT: development
-        shell: 'script -q -e -c "bash {0}"'
+          TERM: xterm-256color # https://github.com/ruby/reline/blob/4ccf128ffa18082265921d77898524dcd87e2b84/.github/workflows/reline.yml#L23-L24
+        shell: 'script -q -e -c "bash {0}"' # https://til.toshimaru.net/2022-04-11
