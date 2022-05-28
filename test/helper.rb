@@ -10,23 +10,33 @@ puts 'Investigate https://github.com/kachick/terminal-progress_bar/runs/66262998
 
 pp ENV.select { |key, _value| /TERM/i.match?(key) }
 
-module Reline::Terminfo
-  def self.curses_dl_files
-    case RUBY_PLATFORM
-    when /mingw/, /mswin/
-      # aren't supported
-      []
-    when /cygwin/
-      %w[cygncursesw-10.dll cygncurses-10.dll]
-    when /darwin/
-      %w[libncursesw.dylib libcursesw.dylib libncurses.dylib libcurses.dylib]
-    else
-      %w[libncursesw.so libcursesw.so libncurses.so libcurses.so]
+seen = false
+
+begin
+  require 'irb'
+rescue => e
+  if e.kind_of?(Reline::Terminfo::TerminfoError) && !seen
+    module Reline::Terminfo
+      def self.curses_dl_files
+        case RUBY_PLATFORM
+        when /mingw/, /mswin/
+          # aren't supported
+          []
+        when /cygwin/
+          %w[cygncursesw-10.dll cygncurses-10.dll]
+        when /darwin/
+          %w[libncursesw.dylib libcursesw.dylib libncurses.dylib libcurses.dylib]
+        else
+          %w[libncursesw.so libcursesw.so libncurses.so libcurses.so]
+        end
+      end
     end
+
+    seen = true
+    retry
   end
 end
 
-require 'irb'
 require 'power_assert/colorize'
 require 'irb/power_assert'
 
