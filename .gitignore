@@ -26,3 +26,5 @@
 *.lock
 
 .DS_Store
+
+docs
