@@ -65,7 +65,7 @@ module Terminal
 
     # @return [Integer]
     def current_bar_width
-      percentage == 0 ? 0 : (max_bar_width * rational).to_int
+      (percentage == 0) ? 0 : (max_bar_width * rational).to_int
     end
 
     # @return [Fixnum] 1..100
