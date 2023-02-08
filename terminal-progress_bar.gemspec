@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
     'rubygems_mfa_required' => 'true'
   }
 
-  gem.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
+  gem.required_ruby_version = Gem::Requirement.new('>= 3.1')
 
   gem.add_runtime_dependency 'io-console', '>= 0.5.11', '< 0.7.0'
   gem.add_runtime_dependency 'optionalargument', '~> 0.6.0'
