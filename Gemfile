@@ -16,9 +16,6 @@ group :development do
   # https://github.com/rubocop/rubocop/pull/10796
   gem 'rubocop', '~> 1.44.1', require: false
   gem 'rubocop-rake', '~> 0.6.0', require: false
-  gem 'rubocop-performance', '~> 1.16.0', require: false
-  gem 'rubocop-rubycw', '~> 0.1.6', require: false
-  gem 'rubocop-md', '~> 1.2.0', require: false
 end
 
 group :test do
