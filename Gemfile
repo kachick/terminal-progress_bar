@@ -12,7 +12,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'yard', '~> 0.9.28', require: false
+  gem 'yard', '~> 0.9.34', require: false
   # https://github.com/rubocop/rubocop/pull/10796
   gem 'rubocop', '~> 1.51.0', require: false
   gem 'rubocop-rake', '~> 0.6.0', require: false
