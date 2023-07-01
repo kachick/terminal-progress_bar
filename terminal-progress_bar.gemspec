@@ -3,7 +3,7 @@
 
 lib_name = 'terminal-progress_bar'
 
-require_relative './lib/terminal/progressbar/version'
+require_relative 'lib/terminal/progressbar/version'
 repository_url = "https://github.com/kachick/#{lib_name}"
 
 Gem::Specification.new do |gem|
