@@ -12,7 +12,7 @@ Description
 Usage
 -----
 
-Try below senario and yor imaginations on REPL(irb/pry).
+Try below scenario and yor imaginations on REPL(irb/pry).
 
 ### Setup
 
